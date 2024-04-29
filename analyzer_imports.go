@@ -1,5 +1,7 @@
 package go_package_spellcheck
 
+// spellchecker:words package spellcheck
+
 // spellchecker:words token strings golang tools analysis
 import (
 	"fmt"

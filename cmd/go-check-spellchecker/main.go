@@ -1,5 +1,7 @@
 package main
 
+// spellchecker:words main
+
 // spellchecker:words github package spellcheck golang tools analysis singlechecker
 import (
 	go_package_spellcheck "github.com/tkw1536/go-package-spellcheck"

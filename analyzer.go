@@ -1,5 +1,7 @@
 package go_package_spellcheck
 
+// spellchecker:words package spellcheck
+
 // spellchecker:words regexp strings golang tools analysis
 import (
 	"go/ast"
@@ -27,6 +29,7 @@ var SpellcheckerPackageComments = &analysis.Analyzer{
 
 			analyzeImportWordDirective(pass, file)
 			analyzeWordsDirectives(pass, file)
+			analyzePackageWordDirective(pass, file)
 		}
 
 		return nil, nil
