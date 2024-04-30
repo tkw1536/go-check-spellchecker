@@ -1,12 +1,16 @@
 //spellchecker:words main
 package main
 
-//spellchecker:words github check spellchecker golang tools analysis singlechecker
+//spellchecker:words github check spellchecker golang tools analysis multichecker
 import (
 	spellchecker "github.com/tkw1536/go-check-spellchecker"
-	"golang.org/x/tools/go/analysis/singlechecker"
+	"golang.org/x/tools/go/analysis/multichecker"
 )
 
 func main() {
-	singlechecker.Main(spellchecker.SpellcheckerPackageComments)
+	multichecker.Main(
+		spellchecker.SpellcheckerPackageComments,
+		spellchecker.SpellcheckerImportComments,
+		spellchecker.SpellcheckerWords,
+	)
 }

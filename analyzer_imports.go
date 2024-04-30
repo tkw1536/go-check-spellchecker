@@ -11,6 +11,24 @@ import (
 	"golang.org/x/tools/go/analysis"
 )
 
+var SpellcheckerImportComments = &analysis.Analyzer{
+	Name: "spellchecker_import_comments",
+	Doc:  "Checks that each import declaration has exactly one 'spellchecker:words' comment containing the words in the imports",
+	Run: func(pass *analysis.Pass) (interface{}, error) {
+		for _, file := range pass.Files {
+			// skip over files that say do not edit
+			if isDoNotEdit(file) || isDisabled(file) {
+				continue
+			}
+
+			// check the actual words in this file
+			analyzeImportWordDirective(pass, file)
+		}
+
+		return nil, nil
+	},
+}
+
 // analyzeImportWordDirective analyzes all import GenDecls for imports.
 func analyzeImportWordDirective(pass *analysis.Pass, file *ast.File) {
 	for _, decl := range file.Decls {

@@ -12,6 +12,24 @@ import (
 	"golang.org/x/tools/go/analysis"
 )
 
+var SpellcheckerPackageComments = &analysis.Analyzer{
+	Name: "spellchecker_package_comments",
+	Doc:  "Checks that each package name has exactly one 'spellchecker:words' comment containing the words in the package name",
+	Run: func(pass *analysis.Pass) (interface{}, error) {
+		for _, file := range pass.Files {
+			// skip over files that say do not edit
+			if isDoNotEdit(file) || isDisabled(file) {
+				continue
+			}
+
+			// check the actual words in this file
+			analyzePackageWordDirective(pass, file)
+		}
+
+		return nil, nil
+	},
+}
+
 func analyzePackageWordDirective(pass *analysis.Pass, file *ast.File) {
 
 	// collect all the comments

@@ -10,33 +10,8 @@ import (
 	"golang.org/x/tools/go/analysis"
 )
 
-var SpellcheckerPackageComments = &analysis.Analyzer{
-	Name: "spellchecker_import_package_comments",
-	Doc:  "reports incorrect or missing comments for package names",
-	Run: func(pass *analysis.Pass) (any, error) {
-		for _, file := range pass.Files {
-			// skip over files that say 'DO NOT EDIT'
-			if isDoNotEdit(file) {
-				continue
-			}
-
-			// if someone turned off the spellchecker for the file
-			// don't even bother doing any more checking
-			if isDisabled(pass, file) {
-				continue
-			}
-
-			analyzeImportWordDirective(pass, file)
-			analyzeWordsDirectives(pass, file)
-			analyzePackageWordDirective(pass, file)
-		}
-
-		return nil, nil
-	},
-}
-
 // isDisabled checks if the spellchecker has been disabled for the given file
-func isDisabled(_ *analysis.Pass, file *ast.File) bool {
+func isDisabled(file *ast.File) bool {
 	for _, group := range file.Comments {
 		for _, comment := range group.List {
 			// ignore multi-line comments
