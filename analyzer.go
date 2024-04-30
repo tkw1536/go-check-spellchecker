@@ -1,8 +1,7 @@
-package go_package_spellcheck
+//spellchecker:words spellchecker
+package spellchecker
 
-// spellchecker:words package spellcheck
-
-// spellchecker:words regexp strings golang tools analysis
+//spellchecker:words regexp strings golang tools analysis
 import (
 	"go/ast"
 	"regexp"
@@ -12,7 +11,7 @@ import (
 )
 
 var SpellcheckerPackageComments = &analysis.Analyzer{
-	Name: "spellcomments",
+	Name: "spellchecker_import_package_comments",
 	Doc:  "reports incorrect or missing comments for package names",
 	Run: func(pass *analysis.Pass) (any, error) {
 		for _, file := range pass.Files {
@@ -119,7 +118,7 @@ func removeComment(pass *analysis.Pass, comment *ast.Comment, message string, fi
 
 // wantComment ensure that comment has the given text
 func wantComment(text string, pass *analysis.Pass, comment *ast.Comment, message string, fix string) bool {
-	want := "// " + text
+	want := "//" + text
 	if comment.Text == want {
 		return true
 	}

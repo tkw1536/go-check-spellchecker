@@ -1,4 +1,4 @@
-module github.com/tkw1536/go-package-spellcheck
+module github.com/tkw1536/go-check-spellchecker
 
 go 1.22.2
 

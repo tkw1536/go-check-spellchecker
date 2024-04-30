@@ -1,8 +1,7 @@
-package go_package_spellcheck
+//spellchecker:words spellchecker
+package spellchecker
 
-// spellchecker:words package spellcheck
-
-// spellchecker:words token strings golang tools analysis
+//spellchecker:words token strings golang tools analysis
 import (
 	"fmt"
 	"go/ast"
@@ -76,7 +75,7 @@ func doImportSpecWords(pass *analysis.Pass, decl *ast.GenDecl, specs []*ast.Impo
 			"update import words directive",
 		)
 	} else {
-		want := fmt.Sprintf("// %s\n", FormatDirective("words", strings.Join(importWords, " ")))
+		want := fmt.Sprintf("//%s\n", FormatDirective("words", strings.Join(importWords, " ")))
 
 		// if the documentation has a preceding '//' comment, then insert a newline
 		if decl.Doc != nil && len(decl.Doc.List) > 0 && strings.HasPrefix(decl.Doc.List[0].Text, "//") {

@@ -1,8 +1,7 @@
-package go_package_spellcheck
+//spellchecker:words spellchecker
+package spellchecker
 
-// spellchecker:words package spellcheck
-
-// spellchecker:words reflect testing
+//spellchecker:words reflect testing
 import (
 	"reflect"
 	"testing"

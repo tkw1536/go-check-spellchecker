@@ -1,8 +1,7 @@
-package go_package_spellcheck
+//spellchecker:words spellchecker
+package spellchecker
 
-// spellchecker:words package spellcheck
-
-// spellchecker:words strings unicode
+//spellchecker:words strings unicode
 import (
 	"fmt"
 	"strings"

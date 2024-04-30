@@ -1,8 +1,7 @@
-package go_package_spellcheck
+//spellchecker:words spellchecker
+package spellchecker
 
-// spellchecker:words package spellcheck
-
-// spellchecker:words token strings github pkglib collection golang tools analysis
+//spellchecker:words token strings github pkglib collection golang tools analysis
 import (
 	"fmt"
 	"go/ast"
@@ -13,47 +12,13 @@ import (
 	"golang.org/x/tools/go/analysis"
 )
 
-func getHeaderRange(file *ast.File) (from, to token.Pos) {
-	from = file.FileStart
-	to = file.FileEnd
-
-	if file.Name != nil {
-		from = file.Name.End()
-	}
-
-	if len(file.Decls) == 0 {
-		return
-	}
-
-	decl := file.Decls[0]
-
-	if gd, ok := decl.(*ast.GenDecl); ok && gd.Doc != nil {
-		to = gd.Doc.Pos()
-		return
-	}
-
-	if fd, ok := decl.(*ast.FuncDecl); ok && fd.Doc != nil {
-		to = fd.Doc.Pos()
-		return
-	}
-
-	to = decl.Pos()
-	return
-}
-
 func analyzePackageWordDirective(pass *analysis.Pass, file *ast.File) {
-	// first possible location of the comment
-	commentFrom, commentUntil := getHeaderRange(file)
-
-	// do we want to automatically delete comments?
-	doDelete := len(file.Imports) != 0
 
 	// collect all the comments
 	comments := make([]*ast.Comment, 0)
 	for _, group := range file.Comments {
 		for _, comment := range group.List {
-			start, end := comment.Pos(), comment.End()
-			if start <= commentFrom || start >= commentUntil || end <= commentFrom || end >= commentUntil {
+			if comment.End() > file.Package {
 				continue
 			}
 			_, ok := parseWordComment(comment)
@@ -70,14 +35,12 @@ func analyzePackageWordDirective(pass *analysis.Pass, file *ast.File) {
 
 	// want no comment, but there is one
 	if len(importWords) == 0 {
-		if doDelete {
-			for _, comment := range comments {
-				removeComment(
-					pass, comment,
-					"'spellchecker:words' directive in header should only refer to package words (of which there are none)",
-					"remove extra directive",
-				)
-			}
+		for _, comment := range comments {
+			removeComment(
+				pass, comment,
+				"'spellchecker:words' directive in header should only refer to package words (of which there are none)",
+				"remove extra directive",
+			)
 		}
 
 		return
@@ -90,18 +53,20 @@ func analyzePackageWordDirective(pass *analysis.Pass, file *ast.File) {
 			"update package words directive",
 		)
 	} else {
-		want := fmt.Sprintf("\n// %s\n\n", FormatDirective("words", strings.Join(importWords, " ")))
+		want := fmt.Sprintf("//%s\n", FormatDirective("words", strings.Join(importWords, " ")))
+		if len(comments) > 1 {
+			want = "//\n" + want
+		}
 
 		pass.Report(analysis.Diagnostic{
-			Pos:     commentFrom,
-			End:     commentUntil,
-			Message: "missing 'spellchecker:words' directive in header",
+			Pos:     file.Package,
+			Message: "missing 'spellchecker:words' directive for package documentation",
 			SuggestedFixes: []analysis.SuggestedFix{
 				{
-					Message: "insert 'spellchecker:words' directive in header",
+					Message: "insert 'spellchecker:words' directive in package header",
 					TextEdits: []analysis.TextEdit{
 						{
-							Pos:     commentUntil,
+							Pos:     file.Package,
 							End:     token.NoPos,
 							NewText: []byte(want),
 						},
@@ -113,14 +78,12 @@ func analyzePackageWordDirective(pass *analysis.Pass, file *ast.File) {
 
 	// extra spellchecker:words comments should be remove
 	if len(comments) > 1 {
-		if doDelete {
-			for _, comment := range comments[1:] {
-				removeComment(
-					pass, comment,
-					"there should be at most one 'spellchecker:words' directive in header",
-					"remove extra directive",
-				)
-			}
+		for _, comment := range comments[1:] {
+			removeComment(
+				pass, comment,
+				"there should be at most one 'spellchecker:words' directive in header",
+				"remove extra directive",
+			)
 		}
 	}
 }
