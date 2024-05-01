@@ -21,7 +21,7 @@ func isDisabled(file *ast.File) bool {
 
 			// parse the directive
 			text := comment.Text[len("//"):]
-			_, directive, _, ok := ParseSpellDirective(text)
+			_, directive, _, ok := ParseSpellComment(text)
 			if !ok {
 				continue
 			}
@@ -56,7 +56,7 @@ func parseWordComment(comment *ast.Comment) ([]string, bool) {
 
 	// parse the directive
 	text := comment.Text[len("//"):]
-	_, directive, value, ok := ParseSpellDirective(text)
+	_, directive, value, ok := ParseSpellComment(text)
 	if !ok {
 		return nil, false
 	}

@@ -1,9 +1,8 @@
 //spellchecker:words spellchecker
 package spellchecker
 
-//spellchecker:words reflect testing
+//spellchecker:words testing
 import (
-	"reflect"
 	"testing"
 )
 
@@ -31,7 +30,7 @@ func TestParseSpellDirective(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.text, func(t *testing.T) {
-			gotKeyword, gotDirective, gotValue, gotOk := ParseSpellDirective(tt.text)
+			gotKeyword, gotDirective, gotValue, gotOk := ParseSpellComment(tt.text)
 			if gotKeyword != tt.wantKeyword {
 				t.Errorf("ParseSpellDirective() gotKeyword = %v, want %v", gotKeyword, tt.wantKeyword)
 			}
@@ -43,31 +42,6 @@ func TestParseSpellDirective(t *testing.T) {
 			}
 			if gotOk != tt.wantOk {
 				t.Errorf("ParseSpellDirective() gotOk = %v, want %v", gotOk, tt.wantOk)
-			}
-		})
-	}
-}
-
-func TestSplitWords(t *testing.T) {
-	tests := []struct {
-		text string
-		want []string
-	}{
-		{text: "hello world", want: []string{"hello", "world"}},
-		{text: "HelloWorld", want: []string{"Hello", "World"}},
-		{text: "HelloWORLD", want: []string{"Hello", "WORLD"}},
-		{text: "HELLOworld", want: []string{"HELLOworld"}},
-		{text: "hellO/world", want: []string{"hell", "O", "world"}},
-		{text: "", want: []string{}},
-		{text: "///", want: []string{}},
-	}
-	for _, tt := range tests {
-		t.Run(tt.text, func(t *testing.T) {
-			if got := SplitWords(tt.text); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("SplitWords() = %v, want %v", got, tt.want)
-			}
-			if got := CountWords(tt.text); got != len(tt.want) {
-				t.Errorf("CountWords() = %v, want %v", got, len(tt.want))
 			}
 		})
 	}

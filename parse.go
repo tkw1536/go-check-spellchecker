@@ -12,20 +12,68 @@ const correctKeyword = "spellchecker"
 
 var keywords = []string{correctKeyword, "cSpell", "spell-checker"}
 
-// ParseSpellDirective parses text belonging to a spellchecker directive.
-// It is expected to be of the form `keyword:directive args`.
-// Each part may contain spaces at the edges and is matched under case folding.
-func ParseSpellDirective(text string) (keyword, directive, value string, ok bool) {
+// CommentText represents the text belonging to a parsed spellchecker directive.
+// A comment looks like:
+//
+//	keyword:directive Value
+//
+// A keyword must be one of 'spellchecker', 'cSpell' or 'spell-checker'.
+// Keywords and directives are parsed under case-folding.
+type CommentText struct {
+	Keyword   string
+	Directive string
+	Value     string
+}
+
+// IsDirective checks if this CommentText represents the given directive.
+// Directives are compared under case folding.
+func (ct CommentText) IsDirective(directive string) bool {
+	return strings.EqualFold(ct.Directive, directive)
+}
+
+// CommentText returns a normalized copy of comment.
+//
+// The picks the default keyword, and lowercases the directive.
+func (ct CommentText) Normalize() CommentText {
+	ct.Keyword = correctKeyword
+	ct.Directive = strings.ToLower(ct.Directive)
+	return ct
+}
+
+// String formats the contents of this CommentText, that is it brings it back into the form:
+//
+// Keyword:Directive Value
+func (ct CommentText) String() string {
+	if ct.Value == "" {
+		return fmt.Sprintf("%s:%s", ct.Keyword, ct.Directive)
+	}
+	return fmt.Sprintf("%s:%s %s", ct.Keyword, ct.Directive, ct.Value)
+}
+
+// Text is like string, but includes the comment character ("//").
+func (ct CommentText) Text() string {
+	if ct.Value == "" {
+		return fmt.Sprintf("//%s:%s", ct.Keyword, ct.Directive)
+	}
+	return fmt.Sprintf("//%s:%s %s", ct.Keyword, ct.Directive, ct.Value)
+}
+
+// Parse parses the given text into a comment.
+// If the comment does not represent a text, returns false.
+func (ct *CommentText) Parse(text string) bool {
 	// if there is a newline, it can't be a directive.
 	if strings.ContainsRune(text, '\n') {
-		return "", "", "", false
+		return false
 	}
 
 	// split by the ':' to check if we have a keyword
 	before, after, found := strings.Cut(text, ":")
 	if !found {
-		return "", "", "", false
+		return false
 	}
+
+	var ok bool
+	var keyword, directive, value string
 
 	// check the before and attempt to match a keyword
 	// (under case-folding)
@@ -39,7 +87,7 @@ func ParseSpellDirective(text string) (keyword, directive, value string, ok bool
 	}
 
 	if !ok {
-		return "", "", "", false
+		return false
 	}
 
 	// use the directive
@@ -54,125 +102,29 @@ func ParseSpellDirective(text string) (keyword, directive, value string, ok bool
 
 	// check that there was a directive
 	if directive == "" {
-		return "", "", "", false
+		return false
 	}
 
-	return
+	// store the parsed values
+	ct.Directive = directive
+	ct.Keyword = keyword
+	ct.Value = value
+	return true
+}
+
+// ParseSpellComment parses text belonging to a spellchecker comment.
+// It is expected to be of the form `keyword:directive args`.
+// Each part may contain spaces at the edges and is matched under case folding.
+func ParseSpellComment(text string) (keyword, directive, value string, ok bool) {
+	var ct CommentText
+	if !ct.Parse(text) {
+		return "", "", "", false
+	}
+	return ct.Keyword, ct.Directive, ct.Value, true
 }
 
 // FormatDirective formats a directive into a string
 func FormatDirective(directive, value string) string {
-	directive = strings.ToLower(directive)
-	value = strings.TrimSpace(value)
-	if value == "" {
-		return fmt.Sprintf("%s:%s", correctKeyword, directive)
-	}
-	return fmt.Sprintf("%s:%s %s", correctKeyword, directive, value)
-}
-
-// SplitWords splits text into words.
-//
-// A word is a sequence of runes within the text.
-// Each word may consist of upper and lowercase letters.
-//
-// Uppercase letters may only appear contiguously at the beginning of the word.
-// "HELLOworld" is one word, whereas "HelloWorld" is two words "Hello" and "World".
-//
-// To count the number of words in text, use CountWords instead.
-func SplitWords(text string) []string {
-	// NOTE: Keep this in sync with CountWords.
-	words := make([]string, 0, CountWords(text))
-
-	lastStart := -1       // index where the last word started
-	lastWasUpper := false // was the last letter of a word upper case?
-	for index, char := range text {
-		// not inside a word
-		if lastStart == -1 {
-			if unicode.IsLetter(char) { // letter starts a new word
-				lastWasUpper = unicode.IsUpper(char)
-				lastStart = index
-			}
-			continue
-		}
-
-		// word can only continue if we had a letter
-		isLetter := unicode.IsLetter(char)
-		if isLetter {
-			// contiguous upper-case at the beginning of a word
-			if lastWasUpper && unicode.IsUpper(char) {
-				continue
-			}
-
-			// switched to lower-case
-			if unicode.IsLower(char) {
-				lastWasUpper = false
-				continue
-			}
-			lastWasUpper = true
-		}
-
-		// word has ended => add it to the seen ones
-		words = append(words, text[lastStart:index])
-
-		// if we saw a letter, we have started a new word
-		// start a new word if we saw a letter
-		if isLetter {
-			lastStart = index
-		} else {
-			lastStart = -1
-		}
-	}
-	// finish closing the last word
-	if lastStart != -1 {
-		words = append(words, text[lastStart:])
-	}
-
-	// and return the words
-	return words
-}
-
-// CountWords counts the number of words in the given text.
-// It is an efficient version of len(SplitWords(text))
-func CountWords(text string) int {
-	// NOTE: Keep this in sync with SplitWords.
-	words := 0
-
-	insideWord := false   // are we currently inside a word.
-	lastWasUpper := false // was the last letter of a word upper case?
-	for _, char := range text {
-		// not inside a word
-		if !insideWord {
-			if unicode.IsLetter(char) { // letter starts a new word
-				lastWasUpper = unicode.IsUpper(char)
-				insideWord = true
-			}
-			continue
-		}
-
-		// word can only continue if we had a letter
-		isLetter := unicode.IsLetter(char)
-		if isLetter {
-			// contiguous upper-case at the beginning of a word
-			if lastWasUpper && unicode.IsUpper(char) {
-				continue
-			}
-
-			// switched to lower-case
-			if unicode.IsLower(char) {
-				lastWasUpper = false
-				continue
-			}
-			lastWasUpper = true
-		}
-
-		// word has ended => start a new one if we had a letter
-		words++
-		insideWord = isLetter
-	}
-
-	// last word was not closed
-	if insideWord {
-		words++
-	}
-	return words
+	comment := CommentText{Keyword: correctKeyword, Directive: directive, Value: value}
+	return comment.Normalize().String()
 }
