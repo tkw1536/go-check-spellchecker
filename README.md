@@ -8,4 +8,8 @@ Usage:
 go run ./cmd/go-check-spellchecker -fix ./...
 ```
 
-This tool is currently not documented.
+This tool is currently still lacking documentation.
+
+## License
+
+GPL-3.0
