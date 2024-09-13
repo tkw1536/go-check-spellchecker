@@ -1,8 +1,16 @@
 github.com/tkw1536/pkglib v0.0.0-20240426113100-050f34d1e1dd h1:mKzWNMHNO6MCS4wIWsyaC66qxAx7QCOvw69i9DbZvnY=
 github.com/tkw1536/pkglib v0.0.0-20240426113100-050f34d1e1dd/go.mod h1:P/9GGxNGvEZsYShL7bv57UdiHkR0l6AWz1IDMVJGzlY=
+github.com/tkw1536/pkglib v0.0.0-20240801115724-302162d5da99 h1:M0yKhvGzgzqUlL9rOrUPH1u0IErAwc8B1xwm4tT7qos=
+github.com/tkw1536/pkglib v0.0.0-20240801115724-302162d5da99/go.mod h1:P/9GGxNGvEZsYShL7bv57UdiHkR0l6AWz1IDMVJGzlY=
 golang.org/x/mod v0.17.0 h1:zY54UmvipHiNd+pm+m0x9KhZ9hl1/7QNMyxXbc6ICqA=
 golang.org/x/mod v0.17.0/go.mod h1:hTbmBsO62+eylJbnUtE2MGJUyE7QWk4xUqPFrRgJ+7c=
+golang.org/x/mod v0.21.0 h1:vvrHzRwRfVKSiLrG+d4FMl/Qi4ukBCE6kZlTUkDYRT0=
+golang.org/x/mod v0.21.0/go.mod h1:6SkKJ3Xj0I0BrPOZoBy3bdMptDDU9oJrpohJ3eWZ1fY=
 golang.org/x/sync v0.7.0 h1:YsImfSBoP9QPYL0xyKJPq0gcaJdG3rInoqxTWbfQu9M=
 golang.org/x/sync v0.7.0/go.mod h1:Czt+wKu1gCyEFDUtn0jG5QVvpJ6rzVqr5aXyt9drQfk=
+golang.org/x/sync v0.8.0 h1:3NFvSEYkUoMifnESzZl15y791HH1qU2xm6eCJU5ZPXQ=
+golang.org/x/sync v0.8.0/go.mod h1:Czt+wKu1gCyEFDUtn0jG5QVvpJ6rzVqr5aXyt9drQfk=
 golang.org/x/tools v0.20.0 h1:hz/CVckiOxybQvFw6h7b/q80NTr9IUQb4s1IIzW7KNY=
 golang.org/x/tools v0.20.0/go.mod h1:WvitBU7JJf6A4jOdg4S1tviW9bhUxkgeCui/0JHctQg=
+golang.org/x/tools v0.25.0 h1:oFU9pkj/iJgs+0DT+VMHrx+oBKs/LJMV+Uvg78sl+fE=
+golang.org/x/tools v0.25.0/go.mod h1:/vtpO8WL1N9cQC3FN5zPqb//fRXskFHbLKk4OW1Q7rg=
