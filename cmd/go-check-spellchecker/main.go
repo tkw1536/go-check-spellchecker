@@ -1,9 +1,9 @@
 //spellchecker:words main
 package main
 
-//spellchecker:words github check spellchecker golang tools analysis multichecker
+//spellchecker:words check spellchecker golang tools analysis multichecker
 import (
-	spellchecker "github.com/tkw1536/go-check-spellchecker"
+	spellchecker "go.tkw01536.de/go-check-spellchecker"
 	"golang.org/x/tools/go/analysis/multichecker"
 )
 

@@ -1,14 +1,14 @@
 //spellchecker:words spellchecker
 package spellchecker
 
-//spellchecker:words token strings github pkglib collection golang tools analysis
+//spellchecker:words token strings pkglib collection golang tools analysis
 import (
 	"fmt"
 	"go/ast"
 	"go/token"
 	"strings"
 
-	"github.com/tkw1536/pkglib/collection"
+	"go.tkw01536.de/pkglib/collection"
 	"golang.org/x/tools/go/analysis"
 )
 

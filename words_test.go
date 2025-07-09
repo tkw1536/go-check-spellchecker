@@ -1,12 +1,12 @@
 //spellchecker:words spellchecker
 package spellchecker_test
 
-//spellchecker:words reflect testing github check spellchecker
+//spellchecker:words reflect testing check spellchecker
 import (
 	"reflect"
 	"testing"
 
-	spellchecker "github.com/tkw1536/go-check-spellchecker"
+	spellchecker "go.tkw01536.de/go-check-spellchecker"
 )
 
 func TestSplitWords(t *testing.T) {

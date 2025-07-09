@@ -1,13 +1,13 @@
-module github.com/tkw1536/go-check-spellchecker
+module go.tkw01536.de/go-check-spellchecker
 
-go 1.24.3
+go 1.24.5
 
 require (
-	github.com/tkw1536/pkglib v0.0.0-20250505092219-37689d1da890
-	golang.org/x/tools v0.33.0
+	go.tkw01536.de/pkglib v0.0.0-20250709062832-2e03f4a6e59a
+	golang.org/x/tools v0.34.0
 )
 
 require (
-	golang.org/x/mod v0.24.0 // indirect
-	golang.org/x/sync v0.14.0 // indirect
+	golang.org/x/mod v0.25.0 // indirect
+	golang.org/x/sync v0.15.0 // indirect
 )
