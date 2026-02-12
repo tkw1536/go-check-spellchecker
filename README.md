@@ -12,4 +12,4 @@ This tool is currently still lacking documentation.
 
 ## License
 
-GPL-3.0
+MIT
