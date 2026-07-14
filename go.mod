@@ -1,9 +1,9 @@
 module go.tkw01536.de/go-check-spellchecker
 
-go 1.27rc1
+go 1.26.5
 
 require (
-	go.tkw01536.de/pkglib v0.0.0-20260628122543-f4fafa0a2f85
+	go.tkw01536.de/pkglib v0.0.0-20260703071639-6b0b0b91646c
 	golang.org/x/tools v0.47.0
 )
 
